@@ -1,9 +1,13 @@
 const express = require("express");
 const app = express();
 const session = require("express-session");
+const bodyParser = require("body-parser");
+const flash = require("connect-flash");
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.json());
-
+app.use(flash());
 const morgan = require("morgan");
 const cors = require("cors");
 
