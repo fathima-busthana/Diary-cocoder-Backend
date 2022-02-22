@@ -1,9 +1,9 @@
-const dotenv = require("dotenv");
-const authrouter = require("./routes/authRoute");
-const mongoose = require("mongoose");
 const app = require("./server");
 const express = require("express");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 const appError = require("./utils/appError");
+const authrouter = require("./routes/authRoute");
 
 //express config settings
 app.use(express.urlencoded({ extended: true }));
@@ -25,6 +25,7 @@ const connectDB = async () => {
 connectDB();
 
 //routes//
+//for authentication
 app.use("/api", authrouter);
 
 //////////
@@ -36,8 +37,23 @@ app.get("/", (req, res) => {
 });
 
 //error handler for
+// all = get,post,etc etc requests
 app.all("*", (req, res, next) => {
-  next(new appError("page not found"), 404);
+  next(
+    new appError(`The requested page ${req.originalUrl} was not found`),
+    404
+  );
+});
+
+app.use((err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || "error";
+
+  res.status(err.statusCode).json({
+    ok: false,
+    status: err.status,
+    message: err.message,
+  });
 });
 
 const port = process.env.PORT || 4000;
