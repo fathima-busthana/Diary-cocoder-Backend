@@ -2,6 +2,7 @@ const users = require("../model/user");
 const appError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const jwt = require("jsonwebtoken");
+const { token } = require("morgan");
 
 //function to crate jwt token for
 const createToken = (id) => {
@@ -28,4 +29,23 @@ exports.signUp = catchAsync(async (req, res, next) => {
     token,
   });
   //   next();
+});
+
+exports.login = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return next(new appError("no email or password provided", 401));
+  }
+  const member = await users.findOne({ email: email }).select("+password");
+
+  //compare the password with db
+  //correctpassword is a method in users schema
+  if (!member || !(await member.correctPassword(password, member.password))) {
+    return next(new appError("please provide a valid email or password", 401));
+  }
+  const tooken = createToken(member._id);
+  res.status(201).json({
+    ok: true,
+    token: token,
+  });
 });
