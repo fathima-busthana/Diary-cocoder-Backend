@@ -1,33 +1,21 @@
-const schema = require("../model/user");
-const passport = require("passport");
+const users = require("../model/user");
+const appError = require("../utils/appError");
+const catchAsync = require("../utils/catchAsync");
 
-exports.auth = function (req, res) {
-  if (!req.body.username) {
-    res.json({ success: false, message: "Username was not given" });
-  } else {
-    if (!req.body.password) {
-      res.json({ success: false, message: "Password was not given" });
-    } else {
-      passport.authenticate("local", function (err, user, info) {
-        if (err) {
-          res.json({ success: false, message: err });
-        } else {
-          if (!user) {
-            res.json({
-              success: false,
-              message: "username or password incorrect",
-            });
-          } else {
-            req.login(user, function (err) {
-              if (err) {
-                res.json({ success: false, message: err });
-              } else {
-                console.log("logged in");
-              }
-            });
-          }
-        }
-      })(req, res);
-    }
+//signup function
+exports.signUp = catchAsync(async (req, res, next) => {
+  const { username, email, password, confirmPassword } = req.body;
+  if (password !== confirmPassword) {
+    return next(new appError("password mismatch", 401));
   }
-};
+  const response = await users.create({
+    username: username,
+    email: email,
+    password: password,
+  });
+  res.status(200).json({
+    ok: true,
+    data: response,
+  });
+  //   next();
+});
