@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const { Schema } = require("mongoose");
 const userSchema = new mongoose.Schema({
   username: {
     type: "string",
@@ -30,6 +31,14 @@ const userSchema = new mongoose.Schema({
       message: "password are not the same",
     },
   },
+  diary: [
+    {
+      //connecting the user object to the database
+      type: Schema.Types.ObjectId,
+      ref: "Diary",
+      required: false,
+    },
+  ],
 });
 //adding password and username field
 userSchema.pre("save", async function (next) {

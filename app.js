@@ -29,6 +29,10 @@ connectDB();
 app.use("/api", authrouter);
 
 //////////
+// app.use((req, res, next) => {
+//   console.log(req.headers);
+//   next();
+// });
 
 app.get("/", (req, res) => {
   res.send(
