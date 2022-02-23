@@ -2,7 +2,6 @@ const users = require("../model/user");
 const appError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const jwt = require("jsonwebtoken");
-const { token } = require("morgan");
 
 //function to crate jwt token for
 const createToken = (id) => {
@@ -43,9 +42,40 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!member || !(await member.correctPassword(password, member.password))) {
     return next(new appError("please provide a valid email or password", 401));
   }
-  const tooken = createToken(member._id);
+  const token = createToken(member._id);
   res.status(201).json({
     ok: true,
     token: token,
+    id: member._id,
   });
+});
+//protecting route miidleware logi route
+exports.protect = catchAsync(async (req, res, next) => {
+  //checking the token
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  if (!token) {
+    res.redirect("/login");
+    return next(new appError("you are not logged in", 401));
+  } else {
+    jwt.verify(token, process.env.JWT_SECRET, (err, token) => {
+      if (err) {
+        res.redirect("/login");
+        return next(new appError("failed to login", 404));
+      } else {
+        next();
+      }
+    });
+  }
+  //validate the token
+
+  //check  user still exist
+
+  //check if user password was changed
+  next();
 });
