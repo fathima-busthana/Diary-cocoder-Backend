@@ -9,8 +9,9 @@ const diarySchema = new mongoose.Schema({
     type: "string",
     required: [true, "should have some text"],
   },
-  id: {
+  heading: {
     type: "string",
+    required: [true, "diary should have some heading"],
   },
 });
 const diary = mongoose.model("Diary", diarySchema);
