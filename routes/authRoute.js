@@ -7,7 +7,7 @@ router.route("/auth/signup").post(authController.signUp);
 router.route("/auth/login").post(authController.login);
 router
   .route("/diary/:id")
-  .get(diaryControl.getAllDiary)
-  .post(diaryControl.createDiary);
+  .get(authController.protect, diaryControl.getAllDiary)
+  .post(authController.protect, diaryControl.createDiary);
 
 module.exports = router;

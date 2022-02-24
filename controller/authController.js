@@ -1,3 +1,4 @@
+const { promisify } = require("util");
 const users = require("../model/user");
 const appError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
@@ -60,22 +61,15 @@ exports.protect = catchAsync(async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
   }
   if (!token) {
-    res.redirect("/login");
     return next(new appError("you are not logged in", 401));
   } else {
-    jwt.verify(token, process.env.JWT_SECRET, (err, token) => {
-      if (err) {
-        res.redirect("/login");
-        return next(new appError("failed to login", 404));
-      } else {
-        next();
-      }
-    });
+    const result = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   }
   //validate the token
 
   //check  user still exist
 
   //check if user password was changed
+
   next();
 });

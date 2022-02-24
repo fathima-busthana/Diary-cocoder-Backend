@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema({
   passwordConfirm: {
     type: "string",
     minLength: 8,
-    required: [true, "please confirm your password"],
     valdate: {
       validator: function (el) {
         return el === this.password;
@@ -36,7 +35,6 @@ const userSchema = new mongoose.Schema({
       //connecting the user object to the database
       type: Schema.Types.ObjectId,
       ref: "Diary",
-      required: false,
     },
   ],
 });
