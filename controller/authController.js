@@ -2,6 +2,7 @@ const { promisify } = require("util");
 const users = require("../model/user");
 const appError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
+const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 
 //function to crate jwt token for
@@ -21,8 +22,11 @@ exports.signUp = catchAsync(async (req, res, next) => {
     password: password,
     passwordConfirm: passwordConfirm,
   });
-  //creating jwt token
   const token = createToken(response._id);
+  res.cookie("jwt", token, {
+    httpOnly: true,
+  });
+  //creating jwt token
   res.status(200).json({
     ok: true,
     data: response,
@@ -45,6 +49,9 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new appError("please provide a valid email or password", 401));
   }
   const token = createToken(member._id);
+  res.cookie("jwt", token, {
+    httpOnly: true,
+  });
   res.status(201).json({
     ok: true,
     token: token,
