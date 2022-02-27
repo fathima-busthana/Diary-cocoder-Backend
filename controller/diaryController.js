@@ -22,11 +22,15 @@ exports.createDiary = catchAsync(async (req, res, next) => {
   if (!user) {
     return next(new appError("the requested user does not exist", 401));
   }
-  const { date, text, uuid } = req.body;
-  if (!date || !text) {
-    return next(new appError("parameter data or text is missing", 401));
+  console.log(req.body);
+  const { text, heading } = req.body;
+  if (!text || !heading) {
+    return next(new appError("parameter heading or text is missing", 401));
   }
-  const newDiary = new diary({ date: date, text: text, id: uuid });
+  const newDiary = new diary({
+    text: text,
+    heading: heading,
+  });
   user.diary.push(newDiary);
   await user.save();
   await newDiary.save();
