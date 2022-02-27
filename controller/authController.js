@@ -1,8 +1,8 @@
 const { promisify } = require("util");
+var encoder = new util.TextEncoder("utf-8");
 const users = require("../model/user");
 const appError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
-const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 
 //function to crate jwt token for
