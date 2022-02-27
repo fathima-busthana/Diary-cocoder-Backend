@@ -11,7 +11,9 @@ app.use(flash());
 const morgan = require("morgan");
 const cors = require("cors");
 
-app.use(morgan("dev"));
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("dev"));
+}
 
 // cors config settings
 const corsOptions = {
@@ -32,6 +34,8 @@ const sessionConfig = {
   },
 };
 
-app.use(session(sessionConfig));
+if (process.env.NODE_ENV !== "production") {
+  app.use(session(sessionConfig));
+}
 
 module.exports = app;
