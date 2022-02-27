@@ -1,11 +1,51 @@
-const app = require("./server");
+// const app = require("./server");
 const express = require("express");
+const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const appError = require("./utils/appError");
 const authrouter = require("./routes/authRoute");
+const cors = require("cors");
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const flash = require("connect-flash");
+const morgan = require("morgan");
 
 //express config settings
+
+const corsOptions = {
+  origin: "*",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.json());
+app.use(flash());
+
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("dev"));
+}
+
+// cors config settings
+
+const sessionConfig = {
+  secret: "thisisthekey",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
+};
+
+if (process.env.NODE_ENV !== "production") {
+  app.use(session(sessionConfig));
+}
+
 app.use(express.urlencoded({ extended: true }));
 dotenv.config({ path: "./.env" });
 
@@ -65,3 +105,5 @@ const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
+
+module.exports = app;
