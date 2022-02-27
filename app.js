@@ -7,7 +7,7 @@ const authrouter = require("./routes/authRoute");
 
 //express config settings
 app.use(express.urlencoded({ extended: true }));
-dotenv.config({ path: "./config.env" });
+dotenv.config({ path: "./.env" });
 
 const DB = process.env.DATABASE.replace("<password>", process.env.PASSWORD);
 const connectDB = async () => {
