@@ -68,12 +68,6 @@ connectDB();
 //for authentication
 app.use("/api", authrouter);
 
-//////////
-// app.use((req, res, next) => {
-//   console.log(req.headers);
-//   next();
-// });
-
 app.get("/", (req, res) => {
   res.send(
     "<div style='height:100vh; display:grid; place-items:center;>\n<h1 style='color:red; font-size:100px; '>Diary-App Api</h1></div>"
