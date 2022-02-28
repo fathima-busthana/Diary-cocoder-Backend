@@ -8,7 +8,6 @@ const authrouter = require("./routes/authRoute");
 const cors = require("cors");
 const session = require("express-session");
 const bodyParser = require("body-parser");
-const flash = require("connect-flash");
 const morgan = require("morgan");
 
 //express config settings
@@ -19,11 +18,10 @@ const corsOptions = {
   optionSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
-
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(flash());
 
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
@@ -31,6 +29,7 @@ if (process.env.NODE_ENV !== "production") {
 
 // cors config settings
 
+dotenv.config({ path: "./.env" });
 const sessionConfig = {
   secret: "thisisthekey",
   resave: false,
@@ -42,13 +41,10 @@ const sessionConfig = {
   },
 };
 
+app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV !== "production") {
   app.use(session(sessionConfig));
 }
-
-app.use(express.urlencoded({ extended: true }));
-dotenv.config({ path: "./.env" });
-
 const DB = process.env.DATABASE.replace("<password>", process.env.PASSWORD);
 const connectDB = async () => {
   try {

@@ -17,17 +17,16 @@ exports.getAllDiary = catchAsync(async (req, res, next) => {
 
 exports.createDiary = catchAsync(async (req, res, next) => {
   const id = req.params.id;
-
   const user = await users.findById(id);
   if (!user) {
     return next(new appError("the requested user does not exist", 401));
   }
-  console.log(req.body);
-  const { text, heading } = req.body;
+  const { text, heading, date } = req.body;
   if (!text || !heading) {
     return next(new appError("parameter heading or text is missing", 401));
   }
   const newDiary = new diary({
+    date: date,
     text: text,
     heading: heading,
   });
