@@ -1,4 +1,5 @@
-const { promisify } = require("util");
+const util = require("util");
+const encoder = new util.TextEncoder("utf-8");
 const users = require("../model/user");
 const appError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
@@ -70,7 +71,10 @@ exports.protect = catchAsync(async (req, res, next) => {
   if (!token) {
     return next(new appError("you are not logged in", 401));
   } else {
-    const result = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const result = await util.promisify(jwt.verify)(
+      token,
+      process.env.JWT_SECRET
+    );
   }
   //validate the token
 
