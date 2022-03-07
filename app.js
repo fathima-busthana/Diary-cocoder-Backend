@@ -1,6 +1,4 @@
-// const app = require("./server");
 const express = require("express");
-const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const appError = require("./utils/appError");
@@ -11,25 +9,23 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 
 //express config settings
+const app = express();
 
 const corsOptions = {
   origin: "*",
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
-app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.json());
 
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
-// cors config settings
-
-dotenv.config({ path: "./.env" });
+dotenv.config();
 const sessionConfig = {
   secret: "thisisthekey",
   resave: false,
@@ -45,8 +41,8 @@ app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV !== "production") {
   app.use(session(sessionConfig));
 }
-const DB = process.env.DATABASE.replace("<password>", process.env.PASSWORD);
 const connectDB = async () => {
+  const DB = process.env.DATABASE.replace("<password>", process.env.PASSWORD);
   try {
     await mongoose.connect(DB, {
       useNewUrlParser: true,
@@ -63,12 +59,6 @@ connectDB();
 //routes//
 //for authentication
 app.use("/api", authrouter);
-
-app.get("/", (req, res) => {
-  res.send(
-    "<div style='height:100vh; display:grid; place-items:center;>\n<h1 style='color:red; font-size:100px; '>Diary-App Api</h1></div>"
-  );
-});
 
 //error handler for
 // all = get,post,etc etc requests
