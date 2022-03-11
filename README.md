@@ -2,7 +2,7 @@
 
 # **Diary Cocoder backend**
 
-The Backend of project was built using Node js Express js and Few other npm packeges
+The Backend of project was built using Node js Express js and Few other npm packages
 
 ### Features
 
